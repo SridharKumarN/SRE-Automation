@@ -4,7 +4,8 @@
 :Prepaid_DSN1, 
  Prepaid_DSN2, 
  TOLLFREE_DSN3 Services
-Timesten DB Instance is in Sync with Master or not.
+Timesten DB Instance is up or not
+Timesten Replication is Sync or not
 This Script doesn't requires any input while execution."""
 
 from datetime import datetime
