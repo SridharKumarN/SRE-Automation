@@ -1,0 +1,10 @@
+---
+ - name: Add a ansiadmin for sudo access
+   hosts: ve_hosts
+   tasks:
+    - name: Inserting a line after a pattern in Ansible example
+      lineinfile:
+        path: /etc/sudoers
+        insertafter: '^root    ALL=(ALL)       ALL'
+        line: loginuser    ALL=(ALL)       ALL
+        firstmatch: yes
