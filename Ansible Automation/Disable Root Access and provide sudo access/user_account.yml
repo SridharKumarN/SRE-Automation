@@ -1,0 +1,43 @@
+- hosts: ve_hosts
+  vars:
+   # created with:
+   #python -c 'import crypt; print crypt.crypt("Provideyourpreferedpassword", "$5$ng9sec$")'
+   password: $5$ng9sec$LbvvwiLOClmpmasx75TXc/
+  tasks:
+   - name: Add group "loginuser" to remote server
+     group:
+       name: loginuser
+       gid: 2002
+       state: present
+   - name: Add user "loginuser" to remote server
+     user:
+       name: loginuser
+       password: "{{ password }}"
+       comment: "deployment user"
+       uid: 2002
+       group: loginuser
+       shell: /bin/bash
+       generate_ssh_key: yes
+       ssh_key_bits: 2048
+       ssh_key_file: .ssh/id_rsa
+       state: present
+   - name: Make sure we have a 'wheel' group
+     group:
+       name: wheel
+       state: present
+
+   - name: Add group "wheel" to loginuser user
+     user:
+      name: invcsd
+      groups: wheel
+      append: yes
+   - name: Make sure we have a 'wheel' group
+     group:
+       name: wheel
+       state: present
+   - name: remove expiry time
+     ansible.builtin.user:
+       name: invcsd
+       expires: -1
+   - name: remove password expiry
+     shell: /usr/bin/passwd -x -1 loginuser
