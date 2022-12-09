@@ -1,0 +1,21 @@
+---
+ - name: Install Sudo Package
+   hosts: ve_hosts
+   become_method: sudo
+   tasks:
+    - name: Check if sudo is already installed
+      command: rpm -q sudo
+      ignore_errors: yes
+      register: rpm_check
+
+    - name: Copy across the sudo RPM
+      copy:
+        src: "binaries/sudo-1.8.23-10.el7_9.2.x86_64.rpm"
+        dest: "/tmp/sudo-1.8.23-10.el7_9.2.x86_64.rpm"
+      when: rpm_check.rc != 0
+
+    - name: Install the sudo RPM
+      command: rpm -ivh /tmp/sudo-1.8.23-10.el7_9.2.x86_64.rpm --force
+      when: rpm_check.rc != 0
+
+
