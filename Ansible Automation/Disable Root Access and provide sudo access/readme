@@ -1,0 +1,42 @@
+Root User Restriction Update : 
+
+Prerequsite :
+
+
+1. Generate the required password using Crypt method
+
+	generate expected password:
+	python -c 'import crypt; print crypt.crypt("ABCD9zk8IaSWRU4EFF", "$1$ng9sec$")'
+
+2. Dowload sudo rpm file [Change RPM accoringly]
+
+  scripted RPM : sudo-1.8.23-10.el7_9.2.x86_64.rpm
+
+
+3. Modify the preferred username accoridngly in the yaml file. 
+
+===========Main Ansible Steps===========================
+
+1. Create the inventory file , 
+
+	[root@sre_auto user_accounts]$cat invcs_access_restrict_server.ini
+	[ve_hosts]
+	10.91.46.36
+	10.91.49.71
+	#10.91.46.23
+
+2. Run below to install Sudo package if not installed,
+
+	ansible-playbook install_sudo.yml -i invcs_access_restrict_server.ini -kK
+
+3. Run below ansible Package to create USER and provide SUDO access, 
+
+	ansible-playbook user_account.yml -i invcs_access_restrict_server.ini -kK -v
+	ansible-playbook sudoaccess.yml -i invcs_access_restrict_server.ini -kK -v
+
+4. "Finally" Run below ansible to Block ROOT Login 
+
+	ansible-playbook disable_root_access.yml -i invcs_access_restrict_server.ini -kK -v
+
+
+5. Access server using root and preferred username 
