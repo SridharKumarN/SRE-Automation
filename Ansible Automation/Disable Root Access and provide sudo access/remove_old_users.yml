@@ -1,0 +1,13 @@
+- hosts: server_hosts
+  become: true
+  become_user: root
+  become_method: sudo
+  vars_files:
+    - users_remove_list.yml
+  tasks:
+    - name: Remove User
+      user:
+       name: '{{ item.name }}'
+       state: absent
+       remove: yes
+      with_items: "{{ username }}"
