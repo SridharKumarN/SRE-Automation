@@ -1,0 +1,14 @@
+---
+ - hosts: all
+   gather_facts: no
+
+   tasks:
+   - name: Add line in bashrc file
+     lineinfile:
+           path: /home/userx/.bashrc
+           regexp: 'export PS1'
+           line: 'export PS1="[\u@\H \W]\$"'
+           state: present
+           backup: yes
+     #become: yes
+
