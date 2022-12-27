@@ -1,0 +1,47 @@
+- hosts: server_hosts
+  become: true
+  become_user: root
+  vars_files:
+    - users_list.yml
+  vars:
+   #
+   #python -c 'import crypt; print crypt.crypt("BCOM9zk8IaSWRU4ABC", "$1$ng9sec$")'
+  tasks:
+
+   - name: Add group "boatid" to remote server
+     group:
+       name: boatid
+       gid: 2004
+       state: present
+
+   - name: Add user "BOATID" to remote server
+     user:
+       name: "{{ item.name }}"
+       password : "{{ item.password | password_hash('sha512') }}"
+       comment: "BOATID user"
+       uid: "{{  item.uid | default(omit)}}"
+       group: boatid
+       shell: /bin/bash
+       generate_ssh_key: yes
+       ssh_key_bits: 2048
+       ssh_key_file: .ssh/id_rsa
+       state: present
+     with_items: "{{ users }}"
+
+
+   - name: Add group "wheel" to boatid user
+     user:
+      name: "{{ item.name }}"
+      groups: wheel
+      append: yes
+     with_items: "{{ users }}"
+
+   - name: Starting at Ansible 2.6, modify user, remove expiry time
+     ansible.builtin.user:
+       name: "{{ item.name }}"
+       expires: -1
+     with_items: "{{ users }}"
+
+   - name: remove password expiry
+     shell: /usr/bin/passwd -x -1 "{{ item.name }}"
+     with_items: "{{ users }}"
