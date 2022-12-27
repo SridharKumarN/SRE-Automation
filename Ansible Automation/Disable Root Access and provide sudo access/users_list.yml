@@ -1,0 +1,11 @@
+#if different password, the follow below method.
+#if same password, just use i original yaml file same password. 
+users:
+  - name: user1
+    password: BCOM@#abc$_4321
+  - name: user2
+    password: BCOM@#abc$_5432
+  - name: user3
+    password: BCOM@#abc$_6543
+  - name: user100
+    password: BCOM@#abc$_7654
